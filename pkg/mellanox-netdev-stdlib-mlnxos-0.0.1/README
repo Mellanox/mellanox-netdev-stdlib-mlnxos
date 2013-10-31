@@ -1,0 +1,86 @@
+# OVERVIEW
+
+Netdev is a vendor-neutral network abstraction framework contributed freely to the DevOps community.
+
+This module contains the mlnx-os specific Provider code implementing the Resource Types defined in
+[netdevops/netdev_stdlib](https://github.com/NetdevOps/puppet-netdev-stdlib).
+
+# EXAMPLE USAGE
+
+This module has been tested against Puppet agent 2.7.19.  Here is a short example of a static manifest for a mellanox FDR Ethernet switch.
+This example assumes that you've also installed the Puppet netdev_stdlib module.
+
+~~~
+
+node "switch-632476" {
+
+  netdev_device { $hostname: }
+
+  $vlans = {
+    'Blue'    => { vlan_id => 100},
+    'Green'   => { vlan_id => 101},
+    'Purple'  => { vlan_id => 102},
+    'Red'     => { vlan_id => 103},
+    'Yellow'  => { vlan_id => 104}
+  }
+
+  create_resources( netdev_vlan, $vlans )
+
+  $hybrid_ports = [
+    'ethernet 1/1',
+    'ethernet 1/2',
+    'ethernet 1/3'
+  ]
+
+  $trunked_ports = [
+    'ethernet 1/4',
+    'ethernet 1/5'
+  ]
+
+  $access_ports = [
+    'ethernet 1/6',
+    'ethernet 1/7'
+  ]
+
+  netdev_l2_interface { $hybrid_ports:
+    vlan_tagging => enable,
+    tagged_vlans => [Green],
+    untagged_vlan => Blue
+  }
+
+  netdev_l2_interface { $trunked_ports:
+    vlan_tagging => disable,
+    tagged_vlans => [Blue,Green,Yellow]
+  }
+
+  netdev_l2_interface { $access_ports:
+    vlan_tagging => enable,
+    tagged_vlans => [],
+    untagged_vlan => Red
+  }
+}
+
+~~~
+
+# DEPENDENCIES
+
+  * Puppet module netdevops/netdev_stdlib version >= 1.0.0
+  * MLNX-OS with puppet support:
+    * switchx-1036,  switchx-6036:
+      - 4200
+
+# INSTALLATION ON PUPPET-MASTER
+
+  * puppet module install netdevops-netdev_stdlib
+  * puppet module install mellanox-netdev_stdlib_mlnxos
+
+
+# CONTRIBUTORS
+
+   David Slama, Mellanox Technologies
+   Aviram Bar-Haim, Mellanox Technologies
+
+License
+-------
+See LICENSE file
+
