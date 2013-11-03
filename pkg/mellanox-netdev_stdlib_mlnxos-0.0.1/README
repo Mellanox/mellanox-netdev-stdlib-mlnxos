@@ -8,11 +8,10 @@ This module contains the mlnx-os specific Provider code implementing the Resourc
 # EXAMPLE USAGE
 
 This module has been tested against Puppet agent 2.7.19.  Here is a short example of a static manifest for a mellanox FDR Ethernet switch.
-This example assumes that you've also installed the Puppet netdev_stdlib module.
 
 ~~~
 
-node "switch-632476" {
+node "My_Ethernet_switch" {
 
   netdev_device { $hostname: }
 

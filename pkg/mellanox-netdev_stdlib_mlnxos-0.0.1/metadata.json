@@ -1,15 +1,15 @@
 {
   "project_page": "https://github.com/Mellanox/mellanox-netdev-stdlib-mlnxos",
   "checksums": {
-    "LICENSE": "95f748eafa6840e451c9b681d33cb17a",
-    "lib/puppet/provider/netdev_lag/mlnxos.rb": "188ab1b8ebb805ab22bcf8715109a2c3",
-    "README": "e3e7ad316db99b5d967eb0f4c5d03203",
     "lib/facter/mlnxos_version.rb": "c382cc4acca02f134d659c5cae3e0565",
-    "lib/puppet/provider/netdev_vlan/mlnxos.rb": "f4eb73678feddfb7491dd82244296ab0",
-    "lib/puppet/provider/netdev_device/mlnxos.rb": "4e84498f211abb7993c775c65b8a60b8",
     "lib/puppet/provider/netdev_l2_interface/mlnxos.rb": "5ae4b7f4574d898e22e0c2305940a979",
-    "Modulefile": "0356dcb813ad319b201fa5b9edc7fac1",
-    "lib/puppet/provider/netdev_interface/mlnxos.rb": "20ae10652aca75cba7a0a626b59928fb"
+    "LICENSE": "95f748eafa6840e451c9b681d33cb17a",
+    "lib/puppet/provider/netdev_interface/mlnxos.rb": "20ae10652aca75cba7a0a626b59928fb",
+    "Modulefile": "a2c459a02d8c98fe38fd3ae0ef7fe3a8",
+    "README": "761b98e86a70feea8458bbe895b1d834",
+    "lib/puppet/provider/netdev_lag/mlnxos.rb": "188ab1b8ebb805ab22bcf8715109a2c3",
+    "lib/puppet/provider/netdev_device/mlnxos.rb": "4e84498f211abb7993c775c65b8a60b8",
+    "lib/puppet/provider/netdev_vlan/mlnxos.rb": "f4eb73678feddfb7491dd82244296ab0"
   },
   "license": "See LICENSE file",
   "source": "https://github.com/Mellanox/mellanox-netdev-stdlib-mlnxos",
@@ -22,7 +22,7 @@
   ],
   "summary": "Provider definition for implementing Networking Device (netdev) Library for Mellanox OS (mlnx-os)",
   "author": "mellanox",
-  "name": "mellanox-netdev-stdlib-mlnxos",
+  "name": "mellanox-netdev_stdlib_mlnxos",
   "types": [
 
   ],

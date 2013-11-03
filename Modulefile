@@ -1,4 +1,4 @@
-name 'mellanox-netdev-stdlib-mlnxos'
+name 'mellanox-netdev_stdlib_mlnxos'
 
 version '0.0.1'
 
