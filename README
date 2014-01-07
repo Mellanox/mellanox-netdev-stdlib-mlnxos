@@ -65,12 +65,13 @@ node "My_Ethernet_switch" {
 
   * Puppet module netdevops/netdev_stdlib version >= 1.0.0
   * MLNX-OS with puppet support:
-    * switchx-1036,  switchx-6036:
-      - 4200
+    * switchx-1036,  switchx-6036, switchx-1016:
+      - 4300
 
 # INSTALLATION ON PUPPET-MASTER
 
   * puppet module install netdevops-netdev_stdlib
+  * puppet module install mellanox-netdev_ospf_stdlib
   * puppet module install mellanox-netdev_stdlib_mlnxos
 
 

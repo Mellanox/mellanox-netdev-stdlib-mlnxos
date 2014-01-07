@@ -1,0 +1,185 @@
+{
+  "project_page": "https://github.com/Mellanox/mellanox-netdev-stdlib-mlnxos",
+  "checksums": {
+    "lib/puppet/provider/netdev_l3_interface/mlnxos.rb": "3922d7dadbd1a096e5985f0ab572d11a",
+    "LICENSE": "c4f312808b2c126959c93563ab45bd83",
+    "CHANGELOG.md": "d58a0e5fbdad0460c54454c309cbcd4f",
+    "lib/puppet/provider/netdev_vlan/mlnxos.rb": "4c6bf0a4f758f222bca8905e72258f48",
+    "lib/puppet/provider/netdev_device/mlnxos.rb": "8b3b8cd05a51ce57d7113fd653ed296a",
+    "lib/puppet/type/mlnx_fetched_img.rb": "40730d223777d1545b245a1324a1a696",
+    "lib/puppet/provider/netdev_router_ospf/mlnxos.rb": "89ccbc7d7e789a3b063e0bd79aff53cb",
+    "README": "fde04b53a91ba339ed65b5028156987e",
+    "lib/puppet/provider/netdev_l2_interface/mlnxos.rb": "181a29202ebe87de9d0f55d907d375d6",
+    "lib/puppet/provider/mlnx_installed_img/mlnxos.rb": "df2a8247742a0c642dd00700e500a0a5",
+    "lib/puppet/provider/netdev_lag/mlnxos.rb": "51f37236e3a7ea5fb7cffa4a47c63541",
+    "lib/puppet/provider/netdev_ospf_interface/mlnxos.rb": "56cd81edfc99c237faf98e3480e5f4c6",
+    "lib/puppet/provider/netdev_ospf_area/mlnxos.rb": "e301be91913b59a2664048bb0c13eafe",
+    "lib/puppet/provider/mlnx_protocol/mlnxos.rb": "ae4b2993d421c42bbe66909f1b2affc4",
+    "lib/puppet/type/netdev_l3_interface.rb": "e46b5c5404d04be09de29146c503abe6",
+    "lib/puppet/provider/netdev_interface/mlnxos.rb": "d9e1362a7ad0b4c29585c87a969229ae",
+    "lib/puppet/type/mlnx_protocol.rb": "d46b17718f18a3f580d6c0c5fab26c81",
+    "Modulefile": "5fc03ece05ace4d3372ca53586a690cb",
+    "lib/puppet/type/mlnx_installed_img.rb": "1c0928783585464bdd59e39afc3e586c",
+    "lib/puppet/provider/mlnx_fetched_img/mlnxos.rb": "9a57034ff7ee3ca7e87d89a0e72ebc84",
+    "lib/facter/mlnxos_version.rb": "8bdf68682bffe74d7ee75e96f8343e43"
+  },
+  "license": "See LICENSE file",
+  "source": "https://github.com/Mellanox/mellanox-netdev-stdlib-mlnxos",
+  "description": "Mellanox providers code for Netdev types, which provides a vendor-neutral network abstraction framework for managing network devices",
+  "dependencies": [
+    {
+      "version_requirement": ">= 1.0.0",
+      "name": "netdevops/netdev_stdlib"
+    },
+    {
+      "version_requirement": ">= 1.0.0",
+      "name": "mellanox/netdev_ospf_stdlib"
+    }
+  ],
+  "summary": "Provider definition for implementing Networking Device (netdev) Library for Mellanox OS (mlnx-os)",
+  "author": "mellanox",
+  "name": "mellanox-netdev_stdlib_mlnxos",
+  "types": [
+    {
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The name of the protocol to enable/disable  Valid values are `ip_routing`, `spanning_tree`, `lldp`, `snmp`."
+        }
+      ],
+      "providers": [
+        {
+          "name": "mlnxos",
+          "doc": "Manage protocol enable/disable on a switch\n\nDefault for `netdev_type` == `MLNX`."
+        }
+      ],
+      "properties": [
+        {
+          "name": "ensure",
+          "doc": "The basic property that the resource should be in.  Valid values are `present`, `absent`."
+        }
+      ],
+      "name": "mlnx_protocol",
+      "doc": "Network Device protocol handler"
+    },
+    {
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The interface name"
+        }
+      ],
+      "providers": [
+        {
+          "name": "mlnxos",
+          "doc": "Manage MLNX layer 3 interfaces\n\nDefault for `netdev_type` == `MLNX`."
+        }
+      ],
+      "properties": [
+        {
+          "name": "ensure",
+          "doc": "The basic property that the resource should be in.  Valid values are `present`, `absent`."
+        },
+        {
+          "name": "method",
+          "doc": "  Valid values are `static`, `dhcp`."
+        },
+        {
+          "name": "ipaddress",
+          "doc": ""
+        },
+        {
+          "name": "netmask",
+          "doc": ""
+        },
+        {
+          "name": "gateway",
+          "doc": ""
+        }
+      ],
+      "name": "netdev_l3_interface",
+      "doc": "Ethernet layer3 interface"
+    },
+    {
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The image file name"
+        }
+      ],
+      "providers": [
+        {
+          "name": "mlnxos",
+          "doc": "Manage fetched MLNX-OS images\n\nDefault for `netdev_type` == `MLNX`."
+        }
+      ],
+      "properties": [
+        {
+          "name": "ensure",
+          "doc": "The basic property that the resource should be in.  Valid values are `present`, `absent`."
+        },
+        {
+          "name": "location",
+          "doc": "The location for image fetch."
+        },
+        {
+          "name": "host",
+          "doc": "The host for image fetch."
+        },
+        {
+          "name": "password",
+          "doc": "The password for image fetch"
+        },
+        {
+          "name": "user",
+          "doc": "The user name for image fetch"
+        },
+        {
+          "name": "protocol",
+          "doc": "The protocol to use in the fetch process  Valid values are `http`, `https`, `ftp`, `tftp`, `scp`, `sftp`."
+        },
+        {
+          "name": "force_delete",
+          "doc": "Delete other (not installed) fetched image if necessary  Valid values are `yes`, `no`."
+        }
+      ],
+      "name": "mlnx_fetched_img",
+      "doc": "Manages a software image download to a network device."
+    },
+    {
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The version/file name"
+        }
+      ],
+      "providers": [
+        {
+          "name": "mlnxos",
+          "doc": "Manage fetched MLNX-OS images\n\nDefault for `netdev_type` == `MLNX`."
+        }
+      ],
+      "properties": [
+        {
+          "name": "ensure",
+          "doc": "The basic property that the resource should be in.  Valid values are `present`, `absent`."
+        },
+        {
+          "name": "is_next_boot",
+          "doc": "Ensures that the installed image is the next boot partition  Valid values are `yes`, `no`."
+        },
+        {
+          "name": "configuration_write",
+          "doc": "Write configurations on reload (if reload is necessary)  Valid values are `yes`, `no`."
+        },
+        {
+          "name": "force_reload",
+          "doc": "Reload if image is in other partition  Valid values are `yes`, `no`."
+        }
+      ],
+      "name": "mlnx_installed_img",
+      "doc": "Manages an image installation on a network device."
+    }
+  ],
+  "version": "1.0.0"
+}

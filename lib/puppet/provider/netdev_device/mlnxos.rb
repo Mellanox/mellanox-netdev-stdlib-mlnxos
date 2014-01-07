@@ -7,7 +7,8 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 # Main mlnx device handling class
-# Version 1.6
+#
+# Version 1.0.0
 #
 # Created on Aug 1, 2013
 #

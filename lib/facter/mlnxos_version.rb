@@ -7,7 +7,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 # Main mlnx facter handling class
-# Version 1.6
+# Version 1.0.0
 #
 # Created on Sep 12, 2013
 #
@@ -30,21 +30,23 @@ end
 
 cmd = "/opt/tms/bin/cli -t \"show version\""
 lines = Facter::Util::Resolution.exec(cmd)
-lines = lines.split("\n")
-lines.each do |line|
-  next if line.empty?
 
-  k,v = line.split(':')
-  if !v.nil?
-    k.downcase!
-    k.gsub!(' ','_')
+if lines.include?("\n")
+ lines = lines.split("\n")
+  lines.each do |line|
+    next if line.empty?
 
-    fact_name = "mlnxos_" + k
-    Facter.add(fact_name.to_sym) do
-      setcode do
-        v.strip
+    k,v = line.split(':')
+    if !v.nil?
+      k.downcase!
+      k.gsub!(' ','_')
+
+      fact_name = "mlnxos_" + k
+      Facter.add(fact_name.to_sym) do
+        setcode do
+          v.strip
+        end
       end
     end
   end
 end
-

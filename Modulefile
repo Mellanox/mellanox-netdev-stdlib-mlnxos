@@ -1,6 +1,6 @@
 name 'mellanox-netdev_stdlib_mlnxos'
 
-version '0.0.1'
+version '1.0.0'
 
 source 'https://github.com/Mellanox/mellanox-netdev-stdlib-mlnxos'
 
@@ -15,3 +15,4 @@ description 'Mellanox providers code for Netdev types, which provides a vendor-n
 project_page 'https://github.com/Mellanox/mellanox-netdev-stdlib-mlnxos'
 
 dependency 'netdevops/netdev_stdlib', '>= 1.0.0'
+dependency 'mellanox/netdev_ospf_stdlib', '>= 1.0.0'

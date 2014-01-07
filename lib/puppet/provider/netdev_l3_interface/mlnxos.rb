@@ -6,7 +6,7 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-# Main mlnx lag configuration handler
+# Main mlnx l3_interface configuration handler
 #
 # Version 1.0.0
 #
@@ -17,10 +17,10 @@
 os = `/bin/uname -a`
 require 'mlnx' if os =~ /MELLANOX/
 
-Puppet::Type.type(:netdev_lag).provide(:mlnxos) do
+Puppet::Type.type(:netdev_l3_interface).provide(:mlnxos) do
 
   defaultfor :netdev_type => :MLNX
-  @doc = "Manage MLNX Port-Channel interfaces"
+  @doc = "Manage MLNX layer 3 interfaces"
 
   def initialize(value={})
     super(value)
@@ -29,20 +29,20 @@ Puppet::Type.type(:netdev_lag).provide(:mlnxos) do
 
   mk_resource_methods
 
-  def name=(value)
-    @property_flush[:name] = value
+  def method=(value)
+    @property_flush[:method] = value
   end
 
-  def lacp=(value)
-    @property_flush[:lacp] = value
+  def ipaddress=(value)
+    @property_flush[:ipaddress] = value
   end
 
-  def minimum_links=(value)
-    @property_flush[:minimum_links] = value
+  def netmask=(value)
+    @property_flush[:netmask] = value
   end
 
-  def links=(value)
-    @property_flush[:links] = value
+  def gateway=(value)
+    @property_flush[:gateway] = value
   end
 
   def exists?
@@ -51,55 +51,64 @@ Puppet::Type.type(:netdev_lag).provide(:mlnxos) do
 
   def create
     Puppet.debug("#{self.resource.type}: CREATE #{resource[:name]}")
-    MLNX::netdev_handler(:PUT, :lag, resource[:name], build_params(resource))
+    MLNX::netdev_handler(:PUT, :l3_interface, resource[:name], build_params(resource))
     @property_hash[:ensure] = :present
   end
 
   def destroy
     Puppet.debug("#{self.resource.type}: DESTROY #{resource[:name]}")
-    MLNX::netdev_handler(:DELETE, :lag, resource[:name])
+    MLNX::netdev_handler(:DELETE, :l3_interface, resource[:name])
     @property_hash.clear
-    @property_flush.clear
   end
 
-  def self.instances
+  def self.instances(resources)
     Puppet.debug("Searching device for resources")
-    resp = MLNX::netdev_handler(:GET, :lag)
-    resp.each.collect do |key, value|
-      new(:name => key,
-      :ensure => :present,
-      :lacp => value[:lacp],
-      :minimum_links => value[:minimum_links],
-      :links => value[:links]
-      )
+    resources.keys.each.collect do |name|
+      value = MLNX::netdev_handler(:GET, :l3_interface, name)[name]
+      if value.nil?
+        new(:name => name.to_s,
+        :ensure => :absent
+        )
+      else
+        new(:name => name.to_s,
+        :ensure => :present,
+        :method => value[:method],
+        :ipaddress => value[:ipaddress],
+        :netmask => value[:netmask],
+        :gateway => value[:gateway]
+        )
+      end
     end
   end
 
   def self.prefetch(resources)
     Puppet.debug("Populating existing resources using prefetch")
-    lags = instances
+    interfaces = instances(resources)
     resources.each do |name, params|
-      if provider = lags.find { |lag| lag.name == params[:name] }
+      if provider = interfaces.find { |interface| interface.name == params[:name] }
         Puppet.debug("Setting #{name} provider to #{provider}")
         resources[name].provider = provider
+        netmask_convent = Area_validation.num_to_mask(resources[name][:netmask].gsub("/",''))
+        resources[name][:netmask] = netmask_convent
       end
     end
   end
 
   def flush
     Puppet.debug("#{self.resource.type}: FLUSH #{resource[:name]}")
-    if @property_flush
+    if @property_flush and resource[:ensure].to_sym == :present
       Puppet.debug("Flushing changed parameters")
-      MLNX::netdev_handler(:PUT, :lag, resource[:name],  build_params(resource)) if !@property_flush.empty?
+      MLNX::netdev_handler(:PUT, :l3_interface, resource[:name], build_params(resource))
     end
     @property_hash = resource.to_hash
   end
 
   def build_params(resource)
     params = {}
-    params[:lacp] = resource[:lacp]
-    params[:minimum_links] = resource[:minimum_links]
-    params[:links] = resource[:links].flatten
+    params[:method] = resource[:method]
+    params[:ipaddress] = resource[:ipaddress]
+    params[:netmask] = resource[:netmask]
+    params[:gateway] = resource[:gateway]
     params
   end
 

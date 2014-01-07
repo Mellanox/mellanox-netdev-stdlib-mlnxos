@@ -6,7 +6,7 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-# Main mlnx lag configuration handler
+# Main mlnx protocol enable/disable configuration handler
 #
 # Version 1.0.0
 #
@@ -17,10 +17,10 @@
 os = `/bin/uname -a`
 require 'mlnx' if os =~ /MELLANOX/
 
-Puppet::Type.type(:netdev_lag).provide(:mlnxos) do
+Puppet::Type.type(:mlnx_protocol).provide :mlnxos do
 
   defaultfor :netdev_type => :MLNX
-  @doc = "Manage MLNX Port-Channel interfaces"
+  @doc = "Manage protocol enable/disable on a switch"
 
   def initialize(value={})
     super(value)
@@ -33,54 +33,40 @@ Puppet::Type.type(:netdev_lag).provide(:mlnxos) do
     @property_flush[:name] = value
   end
 
-  def lacp=(value)
-    @property_flush[:lacp] = value
-  end
-
-  def minimum_links=(value)
-    @property_flush[:minimum_links] = value
-  end
-
-  def links=(value)
-    @property_flush[:links] = value
-  end
-
   def exists?
     @property_hash[:ensure] == :present
   end
 
   def create
     Puppet.debug("#{self.resource.type}: CREATE #{resource[:name]}")
-    MLNX::netdev_handler(:PUT, :lag, resource[:name], build_params(resource))
+    MLNX::netdev_handler(:PUT, :protocol, resource[:name])
     @property_hash[:ensure] = :present
   end
 
   def destroy
     Puppet.debug("#{self.resource.type}: DESTROY #{resource[:name]}")
-    MLNX::netdev_handler(:DELETE, :lag, resource[:name])
+    MLNX::netdev_handler(:DELETE, :protocol, resource[:name])
     @property_hash.clear
     @property_flush.clear
   end
 
-  def self.instances
+  def self.instances(resources)
     Puppet.debug("Searching device for resources")
-    resp = MLNX::netdev_handler(:GET, :lag)
-    resp.each.collect do |key, value|
-      new(:name => key,
-      :ensure => :present,
-      :lacp => value[:lacp],
-      :minimum_links => value[:minimum_links],
-      :links => value[:links]
-      )
+    resources.keys.each.collect do |name|
+      value = MLNX::netdev_handler(:GET, :protocol, name)[name]
+      if value.nil?
+        new(:name => name, :ensure => :absent)
+      else
+        new(:name => name, :ensure => :present)
+      end
     end
   end
 
   def self.prefetch(resources)
     Puppet.debug("Populating existing resources using prefetch")
-    lags = instances
+    protocols = instances(resources)
     resources.each do |name, params|
-      if provider = lags.find { |lag| lag.name == params[:name] }
-        Puppet.debug("Setting #{name} provider to #{provider}")
+      if provider = protocols.find { |protocol| protocol.name == params[:name]}
         resources[name].provider = provider
       end
     end
@@ -88,19 +74,11 @@ Puppet::Type.type(:netdev_lag).provide(:mlnxos) do
 
   def flush
     Puppet.debug("#{self.resource.type}: FLUSH #{resource[:name]}")
-    if @property_flush
+    if not @property_flush.empty?
       Puppet.debug("Flushing changed parameters")
-      MLNX::netdev_handler(:PUT, :lag, resource[:name],  build_params(resource)) if !@property_flush.empty?
+      MLNX::netdev_handler(:PUT, :protocol, resource[:name])
     end
     @property_hash = resource.to_hash
-  end
-
-  def build_params(resource)
-    params = {}
-    params[:lacp] = resource[:lacp]
-    params[:minimum_links] = resource[:minimum_links]
-    params[:links] = resource[:links].flatten
-    params
   end
 
 end

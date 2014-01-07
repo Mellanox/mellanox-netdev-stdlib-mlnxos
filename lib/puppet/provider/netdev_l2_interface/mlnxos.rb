@@ -8,7 +8,7 @@
 #
 # Main mlnx l2_interface configuration handler
 #
-# Version 1.6
+# Version 1.0.0
 #
 # Created on Aug 1, 2013
 #
@@ -65,15 +65,20 @@ Puppet::Type.type(:netdev_l2_interface).provide(:mlnxos) do
     Puppet.debug("Searching device for resources")
     resources.keys.each.collect do |name|
       value = MLNX::netdev_handler(:GET, :l2_interface, name)[name]
-      new(:name => name,
-      :ensure => :present,
-      :vlan_tagging => value[:vlan_tagging],
-      :descripton => value[:description],
-      :tagged_vlans => value[:tagged_vlans],
-      :untagged_vlan => value[:untagged_vlan]
-      )
+      if value.nil?
+        new(:name => name.to_s,
+        :ensure => :absent
+        )
+      else
+        new(:name => name,
+        :ensure => :present,
+        :vlan_tagging => value[:vlan_tagging],
+        :descripton => value[:description],
+        :tagged_vlans => value[:tagged_vlans],
+        :untagged_vlan => value[:untagged_vlan]
+        )
+      end
     end
-
   end
 
   def self.prefetch(resources)
@@ -91,7 +96,7 @@ Puppet::Type.type(:netdev_l2_interface).provide(:mlnxos) do
 
   def flush
     Puppet.debug("#{self.resource.type}: FLUSH #{resource[:name]}")
-    if @property_flush and resource[:ensure].to_sym == :present
+    if (@property_flush and (resource[:ensure] != :absent))
       Puppet.debug("Flushing changed parameters")
       MLNX::netdev_handler(:PUT, :l2_interface, resource[:name], build_params(resource))
     end
@@ -101,10 +106,10 @@ Puppet::Type.type(:netdev_l2_interface).provide(:mlnxos) do
 
   def build_params(resource)
     params = {}
-    params[:vlan_tagging] = resource['vlan_tagging']
-    params[:description] = resource['description']
-    params[:tagged_vlans] = resource['tagged_vlans'].flatten
-    params[:untagged_vlan] = resource['untagged_vlan']
+    params[:vlan_tagging] = resource[:vlan_tagging]
+    params[:description] = resource[:description]
+    params[:tagged_vlans] = resource[:tagged_vlans].flatten
+    params[:untagged_vlan] = resource[:untagged_vlan]
     params
   end
 
