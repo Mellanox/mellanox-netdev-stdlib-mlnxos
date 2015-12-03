@@ -3,7 +3,7 @@
 Netdev is a vendor-neutral network abstraction framework contributed freely to the DevOps community.
 
 This module contains the mlnx-os specific Provider code implementing the Resource Types defined in
-[netdevops/netdev_stdlib](https://github.com/NetdevOps/puppet-netdev-stdlib).
+[puppetlabs/netdev_stdlib](https://github.com/puppetlabs/netdev_stdlib).
 
 # EXAMPLE USAGE
 
@@ -63,14 +63,14 @@ node "My_Ethernet_switch" {
 
 # DEPENDENCIES
 
-  * Puppet module netdevops/netdev_stdlib version >= 1.0.0
+  * Puppet module puppetlabs/netdev_stdlib version >= 0.11.0
   * MLNX-OS with puppet support:
     * switchx-1036,  switchx-6036, switchx-1016:
       - 4300
 
 # INSTALLATION ON PUPPET-MASTER
 
-  * puppet module install netdevops-netdev_stdlib
+  * puppet module install puppetlabs-netdev_stdlib
   * puppet module install mellanox-netdev_ospf_stdlib
   * puppet module install mellanox-netdev_stdlib_mlnxos
 
